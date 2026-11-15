@@ -36,7 +36,7 @@
   /* header */
   header{position:sticky;top:0;z-index:20;background:rgba(10,10,8,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
   .bar{display:flex;align-items:center;gap:28px;height:60px}
-  .wordmark{font-weight:800;letter-spacing:.14em;font-size:17px;color:var(--ink);text-decoration:none}
+  .wordmark{font-weight:800;letter-spacing:.14em;font-size:17px;color:var(--ink);text-decoration:none;white-space:nowrap}
   .wordmark i{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--lime);margin-right:9px}
   nav{display:flex;gap:22px;margin-left:auto}
   nav a{color:var(--mut);text-decoration:none;font-size:15px;font-weight:550}
@@ -48,7 +48,8 @@
   .btn.ghost:hover{border-color:var(--lime);color:var(--lime)}
   .btn.small{padding:8px 16px;font-size:14px}
   header .btn{margin-left:6px}
-  @media (max-width:720px){ nav a:nth-child(2){display:none} .bar{gap:16px} }
+  @media (max-width:720px){ nav{gap:14px} nav a:nth-child(2){display:none} .bar{gap:16px} header .btn{padding:8px 13px;font-size:13.5px} }
+  @media (max-width:560px){ nav{display:none} }
 
   /* hero */
   .hero{padding:64px 0 8px;position:relative}
