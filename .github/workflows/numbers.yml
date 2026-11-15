@@ -1,0 +1,64 @@
+name: Live numbers
+
+# Keeps numbers.json in this repo synced with the live Zambo counters so the
+# home page proof strip always shows live data. The bot amends its own last
+# commit (force-with-lease) so git history stays clean; if a human commit
+# lands on top, it falls back to a normal commit.
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: live-numbers
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch live counters
+        run: |
+          set -euo pipefail
+          stats=$(curl -fsS https://zambo.dev/api/stats)
+          pkg=$(curl -fsS https://zambo.dev/api/package-stats)
+          STATS="$stats" PKG="$pkg" python3 - <<'PY'
+          import json, os
+          s = json.loads(os.environ["STATS"])
+          p = json.loads(os.environ["PKG"])
+          out = {
+              "receipts": s["public_receipts"],
+              "receipts_today": s["public_receipts_today"],
+              "downloads": p.get("combined_all_time", p.get("combined")),
+              "updated_at": s.get("updated_at"),
+          }
+          with open("numbers.json", "w") as f:
+              json.dump(out, f, indent=1)
+              f.write("\n")
+          print(out)
+          PY
+
+      - name: Commit if changed
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- numbers.json; then
+            echo "numbers.json unchanged, nothing to do"
+            exit 0
+          fi
+          git config user.name "zambo-numbers[bot]"
+          git config user.email "numbers@zambo.dev"
+          git add numbers.json
+          LAST=$(git log -1 --pretty=%an || echo "")
+          if [ "$LAST" = "zambo-numbers[bot]" ]; then
+            git commit --amend --no-edit
+            git push --force-with-lease origin main
+          else
+            git commit -m "Live numbers refresh"
+            git push origin main
+          fi

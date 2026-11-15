@@ -92,12 +92,17 @@
   /* proof strip */
   .proof{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);
     border-radius:14px;overflow:hidden;margin:56px 0 0}
-  .proof div{background:var(--card);padding:22px 22px 18px}
-  .proof .num{font-size:clamp(26px,3.4vw,38px);font-weight:800;letter-spacing:-.01em;line-height:1}
+  .proof > div{background:var(--card);padding:22px 22px 18px;min-width:0}
+  .proof .num{font-size:clamp(25px,3.4vw,38px);font-weight:800;letter-spacing:-.01em;line-height:1;
+    white-space:nowrap;font-variant-numeric:tabular-nums}
   .proof .num span{color:var(--lime)}
   .proof .lab{font-size:13.5px;color:var(--mut);margin-top:8px;line-height:1.45}
-  @media (max-width:820px){ .proof{grid-template-columns:repeat(2,1fr)} }
+  @media (max-width:820px){ .proof{grid-template-columns:repeat(2,1fr)} .proof > div{padding:20px 18px 16px} }
   .srcnote{font-size:13px;color:var(--dim);margin:12px 2px 0}
+  .livedot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--lime);
+    margin-right:7px;vertical-align:1px;animation:pulse 2.4s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  @media (prefers-reduced-motion:reduce){ .livedot{animation:none} }
   .srcnote a{color:var(--dim)}
 
   /* sections */
@@ -214,12 +219,12 @@
     </div>
 
     <div class="proof">
-      <div><div class="num">138,669</div><div class="lab">verifiable receipts issued so far, every one recomputable by anyone</div></div>
-      <div><div class="num">270,700</div><div class="lab">package downloads across PyPI and npm</div></div>
+      <div><div class="num" id="n-receipts">138,692</div><div class="lab">verifiable receipts issued so far, every one recomputable by anyone</div></div>
+      <div><div class="num" id="n-downloads">270,700</div><div class="lab">package downloads across PyPI and npm</div></div>
       <div><div class="num">143<span>/146</span></div><div class="lab">AER-1 conformance corpus: 143 vectors, 146 checks, one published digest</div></div>
-      <div><div class="num">857</div><div class="lab">receipts issued today alone</div></div>
+      <div><div class="num" id="n-today">874</div><div class="lab">receipts issued today alone</div></div>
     </div>
-    <p class="srcnote">Numbers read live from <a href="https://zambo.dev/api/stats">zambo.dev/api/stats</a> and <a href="https://zambo.dev/api/package-stats">zambo.dev/api/package-stats</a> on Nov 15, 2026. Receipts prove the saved result was not changed. They never claim the result was right.</p>
+    <p class="srcnote"><span class="livedot" aria-hidden="true"></span>Live numbers from <a href="https://zambo.dev/api/stats">zambo.dev/api/stats</a> and <a href="https://zambo.dev/api/package-stats">zambo.dev/api/package-stats</a>, refreshed while this page is open. Receipts prove the saved result was not changed. They never claim the result was right.</p>
   </div>
 
   <!-- HANDOVER -->
@@ -343,5 +348,42 @@
   </footer>
 
 </main>
+
+<script>
+(function () {
+  var fmt = function (n) { return Number(n).toLocaleString("en-US"); };
+  var set = function (id, v) {
+    if (v == null || isNaN(v)) return;
+    var el = document.getElementById(id);
+    if (el) el.textContent = fmt(v);
+  };
+  var get = function (url) {
+    return fetch(url, { cache: "no-store" }).then(function (r) {
+      if (!r.ok) throw new Error(r.status);
+      return r.json();
+    });
+  };
+  var lastApi = 0;
+  var tick = function () {
+    get("https://zambo.dev/api/stats").then(function (d) {
+      lastApi = Date.now();
+      set("n-receipts", d.public_receipts);
+      set("n-today", d.public_receipts_today);
+    }).catch(function () {});
+    get("https://zambo.dev/api/package-stats").then(function (d) {
+      lastApi = Date.now();
+      set("n-downloads", d.combined_all_time != null ? d.combined_all_time : d.combined);
+    }).catch(function () {});
+    get("numbers.json").then(function (d) {
+      if (!d || Date.now() - lastApi < 90000) return;
+      set("n-receipts", d.receipts);
+      set("n-today", d.receipts_today);
+      set("n-downloads", d.downloads);
+    }).catch(function () {});
+  };
+  tick();
+  setInterval(tick, 60000);
+})();
+</script>
 </body>
 </html>
