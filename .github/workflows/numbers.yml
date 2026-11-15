@@ -1,9 +1,12 @@
 name: Live numbers
 
 # Keeps numbers.json in this repo synced with the live Zambo counters so the
-# home page proof strip always shows live data. The bot amends its own last
-# commit (force-with-lease) so git history stays clean; if a human commit
-# lands on top, it falls back to a normal commit.
+# home page proof strip always shows live data. The same sync also rewrites
+# the baked fallback numbers inside index.html (the id-anchored proof-strip
+# values), so a no-JS or raw-HTML read is never more than one sync cycle
+# stale. The bot amends its own last commit (force-with-lease) so git
+# history stays clean; if a human commit lands on top, it falls back to a
+# normal commit.
 
 on:
   schedule:
@@ -29,7 +32,7 @@ jobs:
           stats=$(curl -fsS https://zambo.dev/api/stats)
           pkg=$(curl -fsS https://zambo.dev/api/package-stats)
           STATS="$stats" PKG="$pkg" python3 - <<'PY'
-          import json, os
+          import json, os, re
           s = json.loads(os.environ["STATS"])
           p = json.loads(os.environ["PKG"])
           out = {
@@ -41,19 +44,36 @@ jobs:
           with open("numbers.json", "w") as f:
               json.dump(out, f, indent=1)
               f.write("\n")
+          # Rewrite the baked fallback values in index.html so raw-HTML and
+          # no-JS readers see the same counters (comma-formatted, matching
+          # the page's own JS formatter). Anchored on the element ids, which
+          # the in-page script also uses, so the pattern cannot drift.
+          html = open("index.html").read()
+          for el_id, val in (("n-receipts", out["receipts"]),
+                             ("n-downloads", out["downloads"]),
+                             ("n-today", out["receipts_today"])):
+              if val is None:
+                  continue
+              html, n = re.subn(
+                  r'(<div class="num" id="' + el_id + r'">)[^<]*(</div>)',
+                  r"\g<1>" + f"{val:,}" + r"\g<2>", html)
+              if n != 1:
+                  raise SystemExit(f"bake pattern for {el_id} matched {n} times")
+          with open("index.html", "w") as f:
+              f.write(html)
           print(out)
           PY
 
       - name: Commit if changed
         run: |
           set -euo pipefail
-          if git diff --quiet -- numbers.json; then
-            echo "numbers.json unchanged, nothing to do"
+          if git diff --quiet -- numbers.json index.html; then
+            echo "numbers unchanged, nothing to do"
             exit 0
           fi
           git config user.name "zambo-numbers[bot]"
           git config user.email "numbers@zambo.dev"
-          git add numbers.json
+          git add numbers.json index.html
           LAST=$(git log -1 --pretty=%an || echo "")
           if [ "$LAST" = "zambo-numbers[bot]" ]; then
             git commit --amend --no-edit
