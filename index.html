@@ -4,65 +4,343 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Zambo: the verifiable work layer for AI</title>
-<meta name="description" content="One MCP endpoint gives your AI memory across AIs, 153 tools, and a verifiable receipt for every job. 20 calls and 1 wrap-up free every day, and picking up in another AI is always free.">
+<meta name="description" content="One MCP endpoint gives your AI 153 tools, memory and continuity that carry work across AIs, and a verifiable AER-1 receipt for every job. Every tool free once a day, plus 3 continue calls. One free wrap-up handover per day, and pickup is always free.">
 <meta property="og:title" content="Zambo: the verifiable work layer for AI">
-<meta property="og:description" content="Memory and continuity across AIs, 153 tools, and a verifiable AER-1 receipt for every AI job. Check any receipt free.">
+<meta property="og:description" content="153 tools behind one MCP endpoint, continuity that carries work across AIs, and a verifiable AER-1 receipt for every job. Handovers are the flagship: finished work, handed over, receipts attached.">
 <meta property="og:type" content="website">
-  <meta property="og:image" content="https://zambo.dev/og/v3/home.png">
+<meta property="og:url" content="https://zambodotdev.github.io/">
+<meta property="og:image" content="https://zambodotdev.github.io/og.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="640">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Zambo: the verifiable work layer for AI">
+<meta name="twitter:description" content="One MCP endpoint, 153 tools, continuity across AIs, and a verifiable AER-1 receipt for every job, so done is checkable, not trusted.">
+<meta name="twitter:image" content="https://zambodotdev.github.io/og.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a08'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23c6ff3d'/%3E%3C/svg%3E">
 <style>
-  :root { color-scheme: dark; }
-  * { box-sizing: border-box; }
-  body { margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: #0b0e14; color: #e8ecf3; }
-  main { max-width: 880px; margin: 0 auto; padding: 72px 24px 56px; }
-  .mark { font-size: 15px; letter-spacing: .18em; text-transform: uppercase; color: #8b94a7; }
-  h1 { font-size: 44px; line-height: 1.12; margin: 14px 0 16px; font-weight: 750; }
-  h1 .accent { color: #5eead4; }
-  p.lede { font-size: 19px; line-height: 1.55; color: #c3cad8; margin: 0 0 14px; }
-  p.fine { font-size: 15px; color: #8b94a7; margin: 0 0 40px; }
-  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
-  a.card { display: block; padding: 22px; border: 1px solid #232a3a; border-radius: 14px; background: #11151f; color: inherit; text-decoration: none; }
-  a.card:hover { border-color: #5eead4; }
-  a.card h2 { font-size: 19px; margin: 0 0 8px; }
-  a.card p { font-size: 15px; line-height: 1.5; color: #aab3c5; margin: 0; }
-  .cta { margin-top: 40px; display: flex; flex-wrap: wrap; gap: 12px; }
-  .cta a { padding: 13px 22px; border-radius: 999px; text-decoration: none; font-weight: 650; font-size: 16px; }
-  .cta a.primary { background: #5eead4; color: #06251f; }
-  .cta a.ghost { border: 1px solid #2c3549; color: #e8ecf3; }
-  footer { margin-top: 56px; font-size: 14px; color: #68738a; line-height: 1.6; }
-  footer a { color: #8b94a7; }
+  :root{
+    color-scheme: dark;
+    --bg:#0a0a08; --ink:#f4f5ef; --lime:#c6ff3d; --card:#171813; --line:#34382c;
+    --mut:#a7ab9c; --dim:#767b6a; --paper:#f4f5ef; --paper-ink:#14150f;
+    --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    -webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:var(--lime)}
+  ::selection{background:var(--lime);color:#0a0a08}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+
+  /* header */
+  header{position:sticky;top:0;z-index:20;background:rgba(10,10,8,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .bar{display:flex;align-items:center;gap:28px;height:60px}
+  .wordmark{font-weight:800;letter-spacing:.14em;font-size:17px;color:var(--ink);text-decoration:none}
+  .wordmark i{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--lime);margin-right:9px}
+  nav{display:flex;gap:22px;margin-left:auto}
+  nav a{color:var(--mut);text-decoration:none;font-size:15px;font-weight:550}
+  nav a:hover{color:var(--ink)}
+  .btn{display:inline-block;background:var(--lime);color:#0d0f05;text-decoration:none;font-weight:700;
+    padding:11px 20px;border-radius:999px;font-size:15px;border:1px solid var(--lime);white-space:nowrap}
+  .btn:hover{background:#d4ff70}
+  .btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+  .btn.ghost:hover{border-color:var(--lime);color:var(--lime)}
+  .btn.small{padding:8px 16px;font-size:14px}
+  header .btn{margin-left:6px}
+  @media (max-width:720px){ nav a:nth-child(2){display:none} .bar{gap:16px} }
+
+  /* hero */
+  .hero{padding:64px 0 8px;position:relative}
+  .kicker{font-family:var(--mono);font-size:13px;letter-spacing:.22em;color:var(--lime);text-transform:uppercase;margin:0 0 18px}
+  h1.mega{font-size:clamp(64px,13.5vw,168px);line-height:.9;font-weight:850;letter-spacing:-.015em;margin:0;text-transform:uppercase}
+  h1.mega .hollow{color:transparent;-webkit-text-stroke:2px var(--lime)}
+  .tagline{font-size:clamp(26px,4.2vw,44px);font-weight:750;line-height:1.12;margin:20px 0 0;letter-spacing:-.01em}
+  .tagline em{font-style:normal;color:var(--lime)}
+  .lede{font-size:clamp(17px,2vw,20px);line-height:1.6;color:var(--mut);max-width:720px;margin:22px 0 0}
+  .lede strong{color:var(--ink);font-weight:650}
+  .hero-cta{display:flex;flex-wrap:wrap;gap:14px;margin:32px 0 0;align-items:center}
+  .hero-cta .btn{padding:15px 28px;font-size:17px}
+  .free-line{font-size:15.5px;color:var(--ink);margin:20px 0 0}
+  .free-line b{color:var(--lime);font-weight:650}
+  .endpoint{font-family:var(--mono);font-size:14px;color:var(--dim);margin:10px 0 0}
+  .endpoint span{color:var(--mut)}
+
+  /* receipt chain visual */
+  .chain{display:flex;align-items:stretch;gap:0;margin:52px 0 4px;position:relative}
+  .rc{flex:1 1 0;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px 14px;
+    font-family:var(--mono);font-size:12.5px;line-height:1.75;color:var(--mut);position:relative;min-width:0}
+  .rc + .rc{margin-left:26px}
+  .rc + .rc::before{content:"";position:absolute;left:-27px;top:50%;width:26px;border-top:2px dashed #4a5040}
+  .rc .rh{color:var(--ink);font-size:11px;letter-spacing:.18em;display:flex;justify-content:space-between;gap:8px}
+  .rc .rh b{color:var(--lime);font-weight:600}
+  .rc .sealed{color:var(--lime)}
+  .rc .sealed::before{content:"●";margin-right:6px;font-size:10px}
+  .rc.handover{background:var(--paper);color:#3c3f33;border-color:var(--paper);transform:rotate(1.6deg) translateY(-8px);
+    box-shadow:0 24px 60px rgba(0,0,0,.55);flex:1.25 1 0;z-index:2}
+  .rc.handover .rh{color:var(--paper-ink)}
+  .rc.handover .rh b{color:#4d7c0f}
+  .rc.handover .big{font-family:ui-sans-serif,system-ui,sans-serif;font-weight:850;font-size:clamp(20px,2.6vw,30px);
+    letter-spacing:.01em;color:var(--paper-ink);line-height:1.1;margin:8px 0 6px;text-transform:uppercase}
+  .rc.handover .to{font-family:ui-sans-serif,system-ui,sans-serif;font-size:14.5px;color:#3c3f33;line-height:1.45}
+  .rc.handover .perf{border-top:2px dashed #b9bcab;margin-top:12px;padding-top:9px;display:flex;justify-content:space-between;align-items:center}
+  .rc.handover .tag{background:var(--lime);color:#0d0f05;font-weight:700;font-size:11.5px;padding:4px 10px;border-radius:6px;letter-spacing:.08em}
+  .barcode{font-family:var(--mono);letter-spacing:2px;color:#8b8e7d;font-size:13px}
+  @media (max-width:820px){ .chain{flex-direction:column;gap:14px} .rc + .rc{margin-left:0} .rc + .rc::before{display:none} .rc.handover{transform:rotate(1.2deg)} }
+
+  /* proof strip */
+  .proof{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);
+    border-radius:14px;overflow:hidden;margin:56px 0 0}
+  .proof div{background:var(--card);padding:22px 22px 18px}
+  .proof .num{font-size:clamp(26px,3.4vw,38px);font-weight:800;letter-spacing:-.01em;line-height:1}
+  .proof .num span{color:var(--lime)}
+  .proof .lab{font-size:13.5px;color:var(--mut);margin-top:8px;line-height:1.45}
+  @media (max-width:820px){ .proof{grid-template-columns:repeat(2,1fr)} }
+  .srcnote{font-size:13px;color:var(--dim);margin:12px 2px 0}
+  .srcnote a{color:var(--dim)}
+
+  /* sections */
+  section{padding:72px 0 0}
+  .sec-k{font-family:var(--mono);font-size:12.5px;letter-spacing:.22em;color:var(--lime);text-transform:uppercase;margin:0 0 12px}
+  h2{font-size:clamp(30px,4.6vw,48px);font-weight:800;line-height:1.08;letter-spacing:-.015em;margin:0 0 16px}
+  h2 em{font-style:normal;color:var(--lime)}
+  .sec-lede{font-size:18px;line-height:1.62;color:var(--mut);max-width:760px;margin:0}
+  .sec-lede strong{color:var(--ink);font-weight:650}
+  .split{display:grid;grid-template-columns:1.15fr .85fr;gap:36px;align-items:start}
+  @media (max-width:820px){ .split{grid-template-columns:1fr} }
+  .film{display:block;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px;text-decoration:none;color:inherit}
+  .film:hover{border-color:var(--lime)}
+  .film .play{width:56px;height:56px;border-radius:50%;background:var(--lime);color:#0d0f05;display:flex;align-items:center;justify-content:center;font-size:21px;padding-left:4px}
+  .film h3{font-size:21px;margin:16px 0 8px}
+  .film p{color:var(--mut);font-size:15.5px;line-height:1.55;margin:0}
+  .film .dur{font-family:var(--mono);color:var(--lime);font-size:13px;letter-spacing:.14em}
+  ul.ticks{list-style:none;padding:0;margin:22px 0 0}
+  ul.ticks li{padding:11px 0 11px 30px;position:relative;color:var(--mut);font-size:16.5px;line-height:1.55;border-top:1px solid var(--line)}
+  ul.ticks li::before{content:"";position:absolute;left:2px;top:19px;width:9px;height:9px;border-radius:50%;background:var(--lime)}
+  ul.ticks li strong{color:var(--ink)}
+
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:30px}
+  @media (max-width:820px){ .cards{grid-template-columns:1fr} }
+  a.card{display:block;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;text-decoration:none;color:inherit}
+  a.card:hover{border-color:var(--lime)}
+  a.card .ck{font-family:var(--mono);font-size:11.5px;letter-spacing:.2em;color:var(--lime);text-transform:uppercase}
+  a.card h3{font-size:20px;margin:10px 0 8px}
+  a.card p{color:var(--mut);font-size:15.5px;line-height:1.55;margin:0}
+  a.card .go{color:var(--lime);font-weight:650;font-size:15px;display:inline-block;margin-top:14px}
+
+  /* pricing */
+  .tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:30px}
+  @media (max-width:820px){ .tiers{grid-template-columns:1fr} }
+  .tier{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px}
+  .tier.hot{border-color:var(--lime);box-shadow:0 0 0 1px var(--lime)}
+  .tier .tn{font-family:var(--mono);font-size:12px;letter-spacing:.2em;color:var(--mut);text-transform:uppercase}
+  .tier.hot .tn{color:var(--lime)}
+  .tier .price{font-size:40px;font-weight:800;margin:12px 0 4px}
+  .tier .price small{font-size:16px;color:var(--mut);font-weight:550}
+  .tier p{color:var(--mut);font-size:15.5px;line-height:1.55;margin:8px 0 18px}
+
+  /* standard */
+  .std-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:30px}
+  @media (max-width:820px){ .std-grid{grid-template-columns:1fr} }
+  .std{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px}
+  .std h3{font-size:19px;margin:0 0 9px}
+  .std h3 a{color:var(--ink);text-decoration:none}
+  .std h3 a:hover{color:var(--lime)}
+  .std p{color:var(--mut);font-size:15.5px;line-height:1.58;margin:0}
+  .std .ck{font-family:var(--mono);font-size:11.5px;letter-spacing:.2em;color:var(--lime);text-transform:uppercase;display:block;margin-bottom:10px}
+
+  /* footer */
+  footer{margin-top:88px;border-top:1px solid var(--line);padding:38px 0 52px}
+  .binding{font-size:19px;line-height:1.55;font-weight:650;max-width:820px}
+  .binding span{color:var(--lime)}
+  .fineprint{color:var(--dim);font-size:14px;line-height:1.65;margin-top:18px;max-width:820px}
+  .foot-links{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:20px;font-size:14.5px}
+  .foot-links a{color:var(--mut);text-decoration:none}
+  .foot-links a:hover{color:var(--lime)}
 </style>
 </head>
 <body>
-<main>
-  <div class="mark">Zambo</div>
-  <h1>The verifiable work layer for <span class="accent">AI</span>.</h1>
-  <p class="lede">One MCP endpoint gives your AI 153 tools, memory and continuity that carry work across AIs, and a verifiable AER-1 receipt for every job, so "done" is something you can check, not something you have to trust.</p>
-  <p class="fine">20 calls and 1 wrap-up free every day, and picking up in another AI is always free. No API key to start.</p>
 
-  <div class="cards">
-    <a class="card" href="https://zambodotdev.github.io/receipt-scan/">
-      <h2>Receipt Scan</h2>
-      <p>Paste a file or a page. Every Zambo receipt link in it gets checked live, right in your browser.</p>
-    </a>
-    <a class="card" href="https://zambodotdev.github.io/aer-1/">
-      <h2>AER-1 interop matrix</h2>
-      <p>Every independent AER-1 implementation, checked against the draft-zambo-aer1-26 conformance corpus, rebuilt nightly.</p>
-    </a>
-    <a class="card" href="https://zambo.dev/verify/">
-      <h2>Check a receipt</h2>
-      <p>Have a receipt id or a zambo.dev/run link? Verify it free and see exactly what the check covers.</p>
-    </a>
+<header>
+  <div class="wrap bar">
+    <a class="wordmark" href="/"><i></i>ZAMBO</a>
+    <nav>
+      <a href="https://zambodotdev.github.io/receipt-scan/">Receipt Scan</a>
+      <a href="https://zambodotdev.github.io/aer-1/">Interop</a>
+      <a href="https://zambo.dev/verify/">Verify</a>
+      <a href="https://github.com/zambodotdev">GitHub</a>
+    </nav>
+    <a class="btn small" href="https://zambo.dev/add/">Add Zambo</a>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- HERO -->
+  <div class="hero">
+    <p class="kicker">Brennan Zambo · Zambo · AER-1</p>
+    <h1 class="mega">Zamb<span class="hollow">o</span></h1>
+    <p class="tagline">The verifiable work layer for <em>AI</em>.</p>
+    <p class="lede">One MCP endpoint gives your AI <strong>153 tools</strong>, memory and continuity that carry work across AIs, and a <strong>verifiable AER-1 receipt for every job</strong>, so "done" is something you can check, not something you have to trust.</p>
+    <div class="hero-cta">
+      <a class="btn" href="https://zambo.dev/add/">Add Zambo to your AI</a>
+      <a class="btn ghost" href="#handover">See a handover</a>
+    </div>
+    <p class="free-line"><b>Free to start:</b> Every tool free once a day, plus 3 continue calls. One free wrap-up handover per day, and pickup is always free.</p>
+    <p class="endpoint">MCP endpoint: <span>https://zambo.dev/mcp</span> · 37 tools on the default surface, 153 in full · No API key to start</p>
+
+    <div class="chain" aria-hidden="true">
+      <div class="rc">
+        <div class="rh"><span><b>■</b> ZAMBO · RECEIPT</span><span>#0871</span></div>
+        job · client-report-2214<br>
+        prev&nbsp;&nbsp;c41a..88f0<br>
+        sha256 03be..d7a2<br>
+        <span class="sealed">SEALED · AER-1</span>
+      </div>
+      <div class="rc">
+        <div class="rh"><span><b>■</b> ZAMBO · RECEIPT</span><span>#0872</span></div>
+        job · client-report-2214<br>
+        prev&nbsp;&nbsp;03be..d7a2<br>
+        sha256 77d0..03e9<br>
+        <span class="sealed">SEALED · AER-1</span>
+      </div>
+      <div class="rc handover">
+        <div class="rh"><span><b>■</b> ZAMBO · HANDOVER</span><span>#0872</span></div>
+        <div class="big">Handover</div>
+        <div class="to">To the client. 2 receipts, chain verified, ready to pick up in any AI.</div>
+        <div class="perf"><span class="barcode">|||| | || ||| ||||</span><span class="tag">AER-1</span></div>
+      </div>
+    </div>
+
+    <div class="proof">
+      <div><div class="num">138,669</div><div class="lab">verifiable receipts issued so far, every one recomputable by anyone</div></div>
+      <div><div class="num">270,700</div><div class="lab">package downloads across PyPI and npm</div></div>
+      <div><div class="num">143<span>/146</span></div><div class="lab">AER-1 conformance corpus: 143 vectors, 146 checks, one published digest</div></div>
+      <div><div class="num">857</div><div class="lab">receipts issued today alone</div></div>
+    </div>
+    <p class="srcnote">Numbers read live from <a href="https://zambo.dev/api/stats">zambo.dev/api/stats</a> and <a href="https://zambo.dev/api/package-stats">zambo.dev/api/package-stats</a> on Nov 15, 2026. Receipts prove the saved result was not changed. They never claim the result was right.</p>
   </div>
 
-  <div class="cta">
-    <a class="primary" href="https://zambo.dev/add/?ref=gh-pages-root">Add Zambo to your AI</a>
-    <a class="ghost" href="https://github.com/zambodotdev">All repositories</a>
-  </div>
+  <!-- HANDOVER -->
+  <section id="handover">
+    <p class="sec-k">The flagship</p>
+    <h2>Work ends in a <em>handover</em>, not a dead chat.</h2>
+    <div class="split">
+      <div>
+        <p class="sec-lede">A chat ends and the work evaporates: what was decided, what state things are in, who owns what. A handover is the opposite. The job wraps with its summary, its goal, its next steps, and <strong>every receipt from the job chained inside it</strong>, addressed to a named recipient: a client, a teammate, or the next AI.</p>
+        <ul class="ticks">
+          <li><strong>Pickup is always free</strong>, in any AI, and handovers do not expire.</li>
+          <li><strong>The recipient can check the work</strong>: every receipt recomputes, so "it is done" is verified, not believed.</li>
+          <li><strong>Built for people who hand work to clients</strong>: the delivery record, the sign-off, and the answer to "what changed since delivery" live in one place.</li>
+        </ul>
+      </div>
+      <a class="film" href="https://dev.to/rambozambo/watch-a-handover-43-seconds-start-to-finish-2enj">
+        <div class="play">▶</div>
+        <h3>Watch a handover, start to finish</h3>
+        <p>A real session: a job runs, wraps into a handover, and gets picked up and checked. Then one byte of the saved result gets flipped, and the receipt catches it on camera.</p>
+        <p class="dur" style="margin-top:14px">61 SECONDS · REAL SESSION</p>
+      </a>
+    </div>
+  </section>
 
+  <!-- TOOLS -->
+  <section id="tools">
+    <p class="sec-k">Run it yourself</p>
+    <h2>Three ways in, <em>all free</em>.</h2>
+    <div class="cards">
+      <a class="card" href="https://zambodotdev.github.io/receipt-scan/">
+        <span class="ck">Tool</span>
+        <h3>Receipt Scan</h3>
+        <p>Paste a file or a page. Every Zambo receipt link in it gets checked live, right in your browser.</p>
+        <span class="go">Open Receipt Scan →</span>
+      </a>
+      <a class="card" href="https://zambo.dev/verify/">
+        <span class="ck">Tool</span>
+        <h3>Check a receipt</h3>
+        <p>Have a receipt id or a zambo.dev/run link? Verify it free and see exactly what the check covers, and what it does not.</p>
+        <span class="go">Verify a receipt →</span>
+      </a>
+      <a class="card" href="https://zambodotdev.github.io/aer-1/">
+        <span class="ck">Reference</span>
+        <h3>AER-1 interop matrix</h3>
+        <p>Independent AER-1 verifiers and validators, checked against the draft-zambo-aer1-26 conformance corpus, rebuilt nightly.</p>
+        <span class="go">See the matrix →</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section id="pricing">
+    <p class="sec-k">Pricing</p>
+    <h2>Free every day. <em>$0.99</em> when a job needs room.</h2>
+    <p class="sec-lede">Every tool free once a day, plus 3 continue calls. One free wrap-up handover per day, and pickup is always free. When a job outgrows the free tier mid-flight, one paid step finishes it, and the job resumes where it stopped.</p>
+    <div class="tiers">
+      <div class="tier">
+        <div class="tn">Free tier</div>
+        <div class="price">$0</div>
+        <p>Every tool once a day, 3 shared continue calls, one wrap-up handover a day. Pickup, tool discovery, and receipt verification are always free.</p>
+        <a class="btn ghost" href="https://zambo.dev/add/">Start free</a>
+      </div>
+      <div class="tier hot">
+        <div class="tn">Day Pass</div>
+        <div class="price">$0.99 <small>/ 24 hours</small></div>
+        <p>Unlimited everything for 24 hours, including unlimited wrap-ups. Card, PayPal, Apple Pay, or USDC. Bought to finish the job already in flight.</p>
+        <a class="btn" href="https://zambo.dev/day-pass/">Get the Day Pass</a>
+      </div>
+      <div class="tier">
+        <div class="tn">Zambo Pass</div>
+        <div class="price">$29 <small>/ month</small></div>
+        <p>For work that runs every day. $19 a month for $ZAMBO holders. Or own it outright: Lifetime, $250, once.</p>
+        <a class="btn ghost" href="https://zambo.dev/day-pass/">See the Pass</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- STANDARD -->
+  <section id="standard">
+    <p class="sec-k">The standard</p>
+    <h2>AER-1: receipts anyone can <em>recompute</em>.</h2>
+    <p class="sec-lede">Receipts only settle arguments if everyone computes them the same way. AER-1 is that shared computation: an IETF Internet-Draft (draft-zambo-aer1-26), a frozen public corpus, and verifiers run by people who did not write it.</p>
+    <div class="std-grid">
+      <div class="std">
+        <span class="ck">The corpus</span>
+        <h3><a href="https://zambo.dev/aer1/corpus.json">143 vectors · 146 checks</a></h3>
+        <p>The conformance corpus is public and frozen under one digest: sha256 60bf73f3…2db0d. Independent agents re-fetch and recompute it in public; on Nov 14 one recomputed all 72 corpus files, 72 of 72 hashes matching.</p>
+      </div>
+      <div class="std">
+        <span class="ck">The registry</span>
+        <h3><a href="https://rambozambodotdev.gitlab.io/registry.html">Independent verifiers</a></h3>
+        <p>Five independent validators are listed in the public registry, including WhiteMagic Labs and Laurent Lemonnier. Their scores are theirs: the registry reports what each verifier actually ran.</p>
+      </div>
+      <div class="std">
+        <span class="ck">The challenge</span>
+        <h3><a href="https://github.com/zambodotdev/aer-1/issues/4">Run the kit yourself</a></h3>
+        <p>The conformance challenge is open on GitHub: take the kit, run the corpus, publish your score. The standard does not ask to be trusted. It asks to be run.</p>
+      </div>
+      <div class="std">
+        <span class="ck">Maintained in public</span>
+        <h3><a href="https://github.com/zambodotdev/aer-1/blob/main/ERRATA.md">Today's errata</a></h3>
+        <p>On Nov 15 an outside team published two tensions they found between the draft text and the corpus. Both were resolved from the draft's own text and shipped as a public errata the same day. No corpus result changed.</p>
+      </div>
+    </div>
+    <p class="sec-lede" style="margin-top:30px">Why this exists at all: <a href="https://gist.github.com/zambodotdev/90ab788af355417d8dd87a0b1f22a251">"Everyone needs Zambo receipts"</a>, the short essay on the gap between an AI saying the work is done and anyone being able to check it.</p>
+  </section>
+
+  <!-- FOOTER -->
   <footer>
-    Zambo is solo-built by Brennan Zambo. AER-1 is an IETF Internet-Draft (draft-zambo-aer1-26), not a finalized standard. A receipt proves the saved result was not changed since it was saved, not that the result was right.<br>
-    <a href="https://zambo.dev">zambo.dev</a> · <a href="https://zambo.dev/day-pass/">Day Pass, $0.99 for 24 hours</a>
+    <p class="binding"><span>Brennan Zambo</span> created agent execution receipts. <span>Zambo</span> is the origin product. <span>AER-1</span> is the defining standard.</p>
+    <p class="fineprint">Zambo is solo-built by Brennan Zambo. AER-1 is an IETF Internet-Draft (draft-zambo-aer1-26), not a finalized standard. A Zambo receipt proves the saved result was not changed since it was saved, not that the result was right. This page is the GitHub home of the project; the product lives at zambo.dev.</p>
+    <div class="foot-links">
+      <a href="https://zambo.dev">zambo.dev</a>
+      <a href="https://zambo.dev/add/">Add Zambo</a>
+      <a href="https://zambo.dev/day-pass/">Day Pass</a>
+      <a href="https://zambo.dev/verify/">Verify</a>
+      <a href="https://github.com/zambodotdev">GitHub</a>
+      <a href="https://datatracker.ietf.org/doc/draft-zambo-aer1/26/">AER-1 at the IETF</a>
+      <a href="https://zambo.dev/numbers/">The numbers</a>
+    </div>
   </footer>
+
 </main>
 </body>
 </html>
